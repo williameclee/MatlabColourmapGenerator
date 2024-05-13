@@ -1,0 +1,8 @@
+name; 	file; 		aliases
+blue; 	blue.csv; 	blue, b
+cyan; 	cyan.csv; 	cyan, c
+green; 	green.csv; 	green, g
+grey; 	grey.csv; 	grey, gray, black, white, k, w
+pink; 	pink.csv; 	pink, purple, p
+red; 	red.csv; 	red, r
+yellow; yellow.csv; yellow, y

@@ -1,0 +1,4 @@
+name; colourString; position
+temperature; c4 b3 b2 c1 y1 y4 p4; -1, -0.8, -0.6, -0.2, 0.1, 0.5, 1
+temperature anomaly; c4 b2 w1 y3 p4; -1, -0.7, 0, 0.4, 1
+inverted temperature anomaly; p4 y3 w1 b2 c4; -1, -0.4, 0, 0.7, 1
