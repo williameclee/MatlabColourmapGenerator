@@ -11,6 +11,9 @@
 %      colourmap with colours in the colour array at the specified
 %      positions.
 %      The default positions are equally spaced between 0 and 1.
+%   cmap = interpcmap(colourarray, 'Direction', direction) returns a 
+%      colourmap with the specified direction, 'normal' or 'reverse'.
+%      The default direction is 'normal'.
 %   cmap = interpcmap(colourarray, 'Method', method) returns a colourmap
 %      with the specified interpolation method, 'exact' or 'smooth'.
 %      The default method is 'exact'.
@@ -27,10 +30,11 @@
 %      The length of position should be the same as the number of rows in
 %      the colour array.
 %      The values should be in the range [0, 1], unless extrapolating.
+%   - direction: The direction of the colourmap, 'normal' or 'reverse'.
 %   - method: A character vector specifying the interpolation method,
 %      'exact' or 'smooth'.
-%   'exact' ensures that the specified colours are in the colourmap, while
-%      'smooth' interpolates between the colours.
+%      'exact' ensures that the specified colours are in the colourmap,
+%      while 'smooth' interpolates between the colours.
 %
 %   Output Argument:
 %   - cmap: A levels x n numeric matrix representing the custom colourmap,
@@ -44,7 +48,7 @@
 %
 %   E.-C. 'William' Lee
 %   williameclee@gmail.com
-%   May 13, 2024
+%   May 14, 2024
 
 function cmap = interpcmap(colourArray, varargin)
     %% Initialisation
@@ -52,11 +56,15 @@ function cmap = interpcmap(colourArray, varargin)
     addRequired(p, 'ColourArray', @ismatrix);
     addOptional(p, 'Levels', 256, @isscalar);
     addOptional(p, 'Position', [], @ismatrix);
-    addParameter(p, 'Method', 'exact', @ischar);
+    addParameter(p, 'Direction', 'normal', ...
+        @(x) ischar(validatestring(x, {'normal', 'reverse'})));
+    addParameter(p, 'Method', 'exact', ...
+        @(x) ischar(validatestring(x, {'exact', 'smooth'})));
     parse(p, colourArray, varargin{:});
     colourArray = p.Results.ColourArray;
     position = p.Results.Position;
     levels = p.Results.Levels;
+    direction = p.Results.Direction;
     interpMethod = p.Results.Method;
 
     if isempty(position)
@@ -72,6 +80,11 @@ function cmap = interpcmap(colourArray, varargin)
         otherwise
             cmap = intpcmapexact(colourArray, position, levels);
             warning(['Unknown interpolation method ''', interpMethod, ''', using ''exact''.']);
+    end
+
+    % Reverse the colourmap if necessary
+    if strcmpi(direction, 'reverse')
+        cmap = flipud(cmap);
     end
 
 end

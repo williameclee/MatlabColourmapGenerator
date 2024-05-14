@@ -3,26 +3,38 @@
 %
 %   Syntax:
 %   cmap = keynotecmap(name) returns the colourmap based on the given name.
-%   cmap = keynotecmap(name, levels) returns the colourmap with the 
+%   cmap = keynotecmap(name, levels) returns the colourmap with the
 %       specified number of levels.
 %       The default number of levels is 16.
-%   cmap = keynotecmap(name, 'Centre', centre) returns the colourmap with 
+%   cmap = keynotecmap(name, 'Centre', centre) returns the colourmap with
 %       its centre at the specified position.
 %       The default centre position is 0.5.
 %   cmap = keynotecmap(name, ...
-%           'Centre', centre, 'CentreMode', centreMode) 
-%       returns the colourmap with the specified centre mode, 'equal' or 
+%           'Centre', centre, 'CentreMode', centreMode)
+%       returns the colourmap with the specified centre mode, 'equal' or
 %       'full'.
+%       The default centre mode is 'equal'.
+%   cmap = keynotecmap(name, 'Direction', direction) returns the colourmap
+%       with the specified direction, 'normal' or 'reverse'.
+%       The default direction is 'normal'.
+%   cmap = keynotecmap(name, 'Method', method) returns the colourmap with
+%       the specified interpolation method, 'exact' or 'smooth'.
+%       The default method is 'exact'.
 %
 %   Input Arguments:
 %   - name: The name of the colourmap.
 %   - levels: The number of levels in the colourmap.
 %   - centre: The centre position of the colourmap.
 %   - centremode: The mode for shifting the colour position.
-%       - 'equal': Both sides from the centre are scaled equally. Parts of 
+%       - 'equal': Both sides from the centre are scaled equally. Parts of
 %           the colourmap may be truncated.
-%       - 'full': The two sides are scaled independently, showing the full 
+%       - 'full': The two sides are scaled independently, showing the full
 %           range of colours.
+%   - direction: The direction of the colourmap, 'normal' or 'reverse'.
+%   - method: A character vector specifying the interpolation method,
+%      'exact' or 'smooth'.
+%      'exact' ensures that the specified colours are in the colourmap,
+%      while 'smooth' interpolates between the colours.
 %
 %   Output Argument:
 %   - cmap: The generated colourmap.
@@ -31,9 +43,12 @@
 %   cmap = keynotecmap('temperature', 32, ...
 %           'Centre', 0.3, 'CentreMode', 'full');
 %
+%   See also:
+%   keynotecolour (kc), interpcmap
+%
 %   E.-C. 'William' Lee
 %   williameclee@gmail.com
-%   May 13, 2024
+%   May 14, 2024
 
 function cmap = keynotecmap(name, varargin)
     %% Initialisation
@@ -45,11 +60,17 @@ function cmap = keynotecmap(name, varargin)
         @(x) isnumeric(x) && x >= 0 && x <= 1);
     addParameter(p, 'CentreMode', 'equal', ...
         @(x) ischar(validatestring(x, {'equal', 'full'})));
+    addParameter(p, 'Direction', 'normal', ...
+        @(x) ischar(validatestring(x, {'normal', 'reverse'})));
+    addParameter(p, 'Method', 'exact', ...
+        @(x) ischar(validatestring(x, {'exact', 'smooth'})));
     parse(p, name, varargin{:});
     name = p.Results.Name;
     levels = round(p.Results.Levels);
     centre = p.Results.Centre;
     centreMode = p.Results.CentreMode;
+    direction = p.Results.Direction;
+    interpMethod = p.Results.Method;
 
     %% Main
     % Retreive colourmap information from colours/index-colourmaps.csv
@@ -59,14 +80,16 @@ function cmap = keynotecmap(name, varargin)
     % Shift the colour position
     colourPosition = shiftposition(colourPosition, centre, centreMode);
     % Interpolate the colourmap
-    cmap = interpcmap(colourArray, levels, colourPosition);
+    cmap = interpcmap(colourArray, levels, colourPosition, ...
+        'Direction', direction, 'Method', interpMethod);
+
 end
 
 %% Shift and normalise the colour position
 function positionShift = shiftposition(position, centre, centreMode)
     % If the centre is 0.5, no need to shift
     if centre == 0.5
-        positionShift = noramlize(position, 'range');
+        positionShift = normalize(position, 'range');
         return;
     end
 
