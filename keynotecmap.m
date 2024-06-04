@@ -48,12 +48,12 @@
 %
 %   E.-C. 'William' Lee
 %   williameclee@gmail.com
-%   May 14, 2024
+%   Jun 4, 2024
 
 function cmap = keynotecmap(name, varargin)
     %% Initialisation
     p = inputParser;
-    addRequired(p, 'Name', @ischar);
+    addRequired(p, 'Name', @(x) ischar(x) || isstring(x));
     addOptional(p, 'Levels', 16, ...
         @(x) isnumeric(x) && x > 0);
     addParameter(p, 'Centre', 0.5, ...
@@ -64,6 +64,8 @@ function cmap = keynotecmap(name, varargin)
         @(x) ischar(validatestring(x, {'normal', 'reverse'})));
     addParameter(p, 'Method', 'exact', ...
         @(x) ischar(validatestring(x, {'exact', 'smooth'})));
+    addParameter(p, 'SymmetricCentre', 'on', ...
+        @(x) ischar(validatestring(x, {'on', 'off'})));
     parse(p, name, varargin{:});
     name = p.Results.Name;
     levels = round(p.Results.Levels);
@@ -71,17 +73,33 @@ function cmap = keynotecmap(name, varargin)
     centreMode = p.Results.CentreMode;
     direction = p.Results.Direction;
     interpMethod = p.Results.Method;
+    isSymmetricCentre = p.Results.SymmetricCentre;
 
     %% Main
     % Retreive colourmap information from colours/index-colourmaps.csv
-    [colourString, colourPosition] = findcmap(name);
+    [colourString, colourPosition, cmapPolarity] = findcmap(name);
+    dipoleCentre = [];
+
+    if strcmp(cmapPolarity, 'dipole') && strcmp(interpMethod, 'exact') && ...
+            strcmp(isSymmetricCentre, 'on')
+        dipoleCentre = centre;
+    elseif strcmp(cmapPolarity, 'dipole') && strcmp(interpMethod, 'smooth') && ...
+            strcmp(isSymmetricCentre, 'on')
+        warning('The ''SymmetricCentre'' parameter is not applicable.');
+    end
+
     % Convert colour string to RGB array
     colourArray = id2colour(colourString);
     % Shift the colour position
+    if strcmp(direction, 'reverse')
+        centre = 1 - centre;
+    end
+
     colourPosition = shiftposition(colourPosition, centre, centreMode);
     % Interpolate the colourmap
     cmap = interpcmap(colourArray, levels, colourPosition, ...
-        'Direction', direction, 'Method', interpMethod);
+        'Direction', direction, 'Method', interpMethod, ...
+        'DipoleCentre', dipoleCentre);
 
 end
 

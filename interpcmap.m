@@ -11,7 +11,7 @@
 %      colourmap with colours in the colour array at the specified
 %      positions.
 %      The default positions are equally spaced between 0 and 1.
-%   cmap = interpcmap(colourarray, 'Direction', direction) returns a 
+%   cmap = interpcmap(colourarray, 'Direction', direction) returns a
 %      colourmap with the specified direction, 'normal' or 'reverse'.
 %      The default direction is 'normal'.
 %   cmap = interpcmap(colourarray, 'Method', method) returns a colourmap
@@ -35,6 +35,11 @@
 %      'exact' or 'smooth'.
 %      'exact' ensures that the specified colours are in the colourmap,
 %      while 'smooth' interpolates between the colours.
+%   - dipolecentre: The position of the centre of the dipole in the
+%      colour. When the dipole centre falls at the boundary of two
+%      colours, the colour at the centre is duplicated. This parameter is
+%      only relevant when the method is 'exact' and the colourmap is
+%      dipolar (specified in the index-colourmaps.csv).
 %
 %   Output Argument:
 %   - cmap: A levels x n numeric matrix representing the custom colourmap,
@@ -48,7 +53,7 @@
 %
 %   E.-C. 'William' Lee
 %   williameclee@gmail.com
-%   May 14, 2024
+%   Jun 4, 2024
 
 function cmap = interpcmap(colourArray, varargin)
     %% Initialisation
@@ -60,12 +65,15 @@ function cmap = interpcmap(colourArray, varargin)
         @(x) ischar(validatestring(x, {'normal', 'reverse'})));
     addParameter(p, 'Method', 'exact', ...
         @(x) ischar(validatestring(x, {'exact', 'smooth'})));
+    addParameter(p, 'DipoleCentre', [], ...
+        @(x) (isnumeric(x) && x >= 0 && x <= 1) || isempty(x));
     parse(p, colourArray, varargin{:});
     colourArray = p.Results.ColourArray;
     position = p.Results.Position;
     levels = p.Results.Levels;
     direction = p.Results.Direction;
     interpMethod = p.Results.Method;
+    centre = p.Results.DipoleCentre;
 
     if isempty(position)
         position = linspace(0, 1, size(colourArray, 1));
@@ -76,10 +84,11 @@ function cmap = interpcmap(colourArray, varargin)
         case 'smooth'
             cmap = intpcmapsmooth(colourArray, position, levels);
         case 'exact'
-            cmap = intpcmapexact(colourArray, position, levels);
+            cmap = intpcmapexact(colourArray, position, levels, centre);
         otherwise
-            cmap = intpcmapexact(colourArray, position, levels);
-            warning(['Unknown interpolation method ''', interpMethod, ''', using ''exact''.']);
+            cmap = intpcmapexact(colourArray, position, levels, centre);
+            warning(['Unknown interpolation method ''', interpMethod, ...
+                     ''', using ''exact''.']);
     end
 
     % Reverse the colourmap if necessary
@@ -96,14 +105,28 @@ function cmap = intpcmapsmooth(colourArray, position, levels)
 end
 
 %% The 'exact' interpolation method ensures that the specified colours are in the colourmap
-function cmap = intpcmapexact(colourArray, position, levels)
+function cmap = intpcmapexact(colourArray, position, levels, centre)
     cmap = zeros([levels, size(colourArray, 2)]); % initialise colourmap
     % Find the closest index of each colour in the colourmap
     stepsize = 1 / (levels - 1);
     level = round(position / stepsize) + 1;
 
+    if ~isempty(centre)
+        [~, centreId] = min(abs(position(:) - centre));
+        % centreLowerBound = (level(centreId) - 1) * stepsize;
+        if abs((level(centreId) - 1.5) * stepsize - centre) <= 1e-4
+            colourArray = [colourArray(1:centreId, :); ...
+                               colourArray(centreId, :); ...
+                               colourArray(centreId + 1:end, :)];
+            level = [level(1:centreId - 1), ...
+                         level(centreId) - 1, ...
+                         level(centreId:end)];
+        end
+
+    end
+
     % Interpolate piecewise between the colours
-    for i = 1:length(position) - 1
+    for i = 1:length(level) - 1
         level_min = max(level(i), 1); % the lower index of interpolation
         level_max = min(level(i + 1), levels); % the upper index
 
@@ -112,7 +135,8 @@ function cmap = intpcmapexact(colourArray, position, levels)
             % When two colours are at the same index, average the colours
             % This situation should preferably be prevented by raising
             % levels or changing the position
-            cmap(level(i), :) = (colourArray(i, :) + colourArray(i + 1, :)) / 2;
+            cmap(level(i), :) ...
+                = (colourArray(i, :) + colourArray(i + 1, :)) / 2;
             continue;
         end
 

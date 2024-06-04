@@ -40,9 +40,9 @@ function [colour, errorFlag] = keynotecolour(colourName, varargin)
     errorFlag = uint8(0);
     fileroot = [fileparts(mfilename('fullpath')), '/colours/'];
     p = inputParser;
-    addRequired(p, 'ColourName', @ischar);
+    addRequired(p, 'ColourName', @(x) ischar(x) || isstring(x));
     addOptional(p, 'Darkness', 2, @isnumeric);
-    addParameter(p, 'Format', 'normalised', @ischar);
+    addParameter(p, 'Format', 'normalised', @(x) ischar(x) || isstring(x));
     parse(p, colourName, varargin{:});
     colourName = p.Results.ColourName;
     darkness = p.Results.Darkness;
