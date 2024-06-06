@@ -1,49 +1,52 @@
-%%  interpcmap
+%% Interpcmap
 %   Creates a colourmap from an array of colours
 %
 %   Syntax:
-%   cmap = interpcmap(colourarray) returns a colourmap by interpolating
-%      between the colours in the colour array.
-%   cmap = interpcmap(colourarray, levels) returns a colourmap with the
-%      specified number of levels.
-%      The default number of levels is 256.
-%   cmap = interpcmap(colourarray, 'Position', position) returns a
-%      colourmap with colours in the colour array at the specified
-%      positions.
-%      The default positions are equally spaced between 0 and 1.
-%   cmap = interpcmap(colourarray, 'Direction', direction) returns a
-%      colourmap with the specified direction, 'normal' or 'reverse'.
-%      The default direction is 'normal'.
-%   cmap = interpcmap(colourarray, 'Method', method) returns a colourmap
-%      with the specified interpolation method, 'exact' or 'smooth'.
-%      The default method is 'exact'.
-%   cmap = interpcmap(colourarray, levels, position, method) returns a
-%      custom colourmap by interpolating between the colours in the colour
-%      array, with the specified number of levels, positions, and
-%      interpolation method.
+%   cmap = interpcmap(colourarray)
+%       returns a colourmap by interpolating between the colours in the
+%       colour array.
+%   cmap = interpcmap(colourarray, levels)
+%       returns a colourmap with the specified number of levels.
+%       The default number of levels is 256.
+%   cmap = interpcmap(colourarray, 'Position', position)
+%       returns a colourmap with colours in the colour array at the
+%       specified positions.
+%       The default positions are equally spaced between 0 and 1.
+%   cmap = interpcmap(colourarray, 'Direction', direction)
+%       returns a colourmap with the specified direction, 'normal' or
+%       'reverse'.
+%       The default direction is 'normal'.
+%   cmap = interpcmap(colourarray, 'Method', method)
+%       returns a colourmap with the specified interpolation method,
+%       'exact' or 'smooth'.
+%       The default method is 'exact'.
+%   cmap = interpcmap(colourarray, levels, position, method)
+%       returns a custom colourmap by interpolating between the colours in 
+%       the colour array, with the specified number of levels,
+%       positions, and interpolation method.
 %
 %   Input Arguments:
 %   - colourarray: A matrix specifying the colour channels.
 %   - levels: The number of levels in the colourmap.
-%   - position: A numeric vector specifying the relative position of each
-%      colour in the colourmap.
-%      The length of position should be the same as the number of rows in
-%      the colour array.
-%      The values should be in the range [0, 1], unless extrapolating.
+%   - position: A numeric vector specifying the relative position of each 
+%       colour in the colourmap.
+%       The length of position should be the same as the number of rows in 
+%       the colour array.
+%       The values should be in the range [0, 1], unless extrapolating.
 %   - direction: The direction of the colourmap, 'normal' or 'reverse'.
 %   - method: A character vector specifying the interpolation method,
-%      'exact' or 'smooth'.
-%      'exact' ensures that the specified colours are in the colourmap,
-%      while 'smooth' interpolates between the colours.
+%       'exact' or 'smooth'.
+%       'exact' ensures that the specified colours are in the
+%       colourmap, while 'smooth' interpolates between the colours.
 %   - dipolecentre: The position of the centre of the dipole in the
-%      colour. When the dipole centre falls at the boundary of two
-%      colours, the colour at the centre is duplicated. This parameter is
-%      only relevant when the method is 'exact' and the colourmap is
-%      dipolar (specified in the index-colourmaps.csv).
+%       colour. When the dipole centre falls at the boundary of two
+%       colours, the colour at the centre is duplicated. This parameter
+%       is only relevant when the method is 'exact' and the colourmap is 
+%       dipolar (specified in the index-colourmaps.csv).
 %
 %   Output Argument:
-%   - cmap: A levels x n numeric matrix representing the custom colourmap,
-%      where n is the number of colour channels.
+%   - cmap: A levels x n numeric matrix representing the custom
+%       colourmap, where n is the number of colour channels.
 %
 %   Example:
 %   colour_array = [1 0 0; 0 1 0; 0 0 1]; % Red, Green, Blue
@@ -51,9 +54,9 @@
 %   levels = 256; % Number of levels in the colourmap
 %   cmap = interpcmap(colour_array, levels, position);
 %
-%   E.-C. 'William' Lee
-%   williameclee@gmail.com
-%   Jun 5, 2024
+%   Last modified by:
+%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   Jun 6, 2024
 
 function cmap = interpcmap(colourArray, varargin)
     %% Initialisation
@@ -65,8 +68,8 @@ function cmap = interpcmap(colourArray, varargin)
         @(x) ischar(validatestring(x, {'normal', 'reverse'})));
     addParameter(p, 'Method', 'exact', ...
         @(x) ischar(validatestring(x, {'exact', 'smooth'})));
-    addParameter(p, 'DipoleCentre', [], ...
-        @(x) (isnumeric(x) && x >= 0 && x <= 1) || isempty(x));
+    addParameter(p, 'DipoleCentre', nan, ...
+        @(x) (isnumeric(x) && x >= 0 && x <= 1) || isnan(x));
     parse(p, colourArray, varargin{:});
     colourArray = p.Results.ColourArray;
     position = p.Results.Position;
@@ -111,7 +114,7 @@ function cmap = intpcmapexact(colourArray, position, levels, centre)
     stepsize = 1 / levels;
     level = round(position / stepsize) + 1;
 
-    if ~isempty(centre)
+    if ~isnan(centre)
         [~, centreId] = min(abs(position(:) - centre));
 
         if abs((level(centreId) - 1) * stepsize - centre) <= 1e-3

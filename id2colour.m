@@ -1,4 +1,4 @@
-%%  id2colour
+%% id2colour
 %   Converts a character array or cell array of character arrays
 %   representing colours to an (RGB) colour array.
 %
@@ -6,11 +6,11 @@
 %   colourArray = id2colour(colourString)
 %
 %   Input:
-%   - colourString: A character array or a cell array of character arrays
-%       representing colours.
+%   - colourString: A character array or a cell array of character
+%       arrays representing colours.
 %
 %   Output:
-%   - colourArray: An RGB colour array, where each row represents a colour
+%   - colourArray: An RGB colour array, where each row represents a colour 
 %       in the input.
 %
 %   Example:
@@ -21,9 +21,9 @@
 %   See also:
 %   keynotecolour
 %
-%   E.-C. 'William' Lee
-%   williameclee@gmail.com
-%   May 13, 2024
+%   Last modified by:
+%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   Jun 6, 2024
 
 function colourArray = id2colour(colourString)
     % Siwtch between character array and cell array
@@ -64,7 +64,7 @@ function colourArray = char2colour(colourChar)
 
 end
 
-%%  Converts a cell array of character arrays representing colours to an RGB colour array
+%%  Converts character arrays to an RGB colour array
 function colourArray = cell2colour(colourCell)
     % Initialise the colour array
     colourArray = zeros(length(colourCell), 3);

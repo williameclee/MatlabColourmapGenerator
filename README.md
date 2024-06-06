@@ -5,7 +5,7 @@ GitHub repository: [custom-matlab-colour-selector](https://github.com/williamecl
 This repository contains MATLAB scripts for quickly selecting custom colours for MATLAB.
 
 Created by 'Will' En-Chi Lee, 2024.
-Last updated Jun 4, 2024.
+Last updated Jun 6, 2024.
 
 ## Usage
 

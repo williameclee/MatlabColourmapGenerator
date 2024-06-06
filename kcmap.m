@@ -1,22 +1,26 @@
-%%  kcmap
+%% kcmap
 %   Generate a custom colourmap based on a given name and parameters.
 % 	This is an alias for keynotecmap.
 %
 %   Syntax:
-%   cmap = kcmap(name) returns the colourmap based on the given name.
-%   cmap = kcmap(name, levels) returns the colourmap with the specified
-%       number of levels.
+%   cmap = kcmap(name)
+%       returns the colourmap based on the given name.
+%   cmap = kcmap(name, levels)
+%       returns the colourmap with the specified number of levels.
 %       The default number of levels is 16.
-%   cmap = kcmap(name, 'Centre', centre) returns the colourmap with its
-%       centre at the specified position.
+%   cmap = kcmap(name, 'Centre', centre)
+%       returns the colourmap with its centre at the specified position.
 %       The default centre position is 0.5.
-%   cmap = kcmap(name, 'Centre', centre, 'CentreMode', centreMode) returns
-%       the colourmap with the specified centre mode, 'equal' or 'full'.
-%   cmap = kcmap(name, 'Direction', direction) returns the colourmap with
-%       the specified direction, 'normal' or 'reverse'.
+%   cmap = kcmap(name, 'Centre', centre, 'CentreMode', centreMode)
+%       returns the colourmap with the specified centre mode, 'equal'
+%       or 'full'.
+%   cmap = kcmap(name, 'Direction', direction)
+%       returns the colourmap with the specified direction, 'normal' or
+%       'reverse'.
 %       The default direction is 'normal'.
-%   cmap = kcmap(name, 'Method', method) returns the colourmap with the
-%       specified interpolation method, 'exact' or 'smooth'.
+%   cmap = kcmap(name, 'Method', method)
+%       returns the colourmap with the specified interpolation method,
+%       'exact' or 'smooth'.
 %       The default method is 'exact'.
 %
 %   Input Arguments:
@@ -43,9 +47,9 @@
 %   See also:
 %   keynotecolour (kc), interpcmap
 %
-%   E.-C. 'William' Lee
-%   williameclee@gmail.com
-%   May 14, 2024
+%   Last modified by:
+%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   Jun 6, 2024
 
 function cmap = kcmap(name, varargin)
     cmap = keynotecmap(name, varargin{:});

@@ -1,11 +1,12 @@
-%%  findcmap
-%   finds a colourmap by name and returns the corresponding colour string
-%   and position.
+%% findcmap
+%   finds a colourmap by name and returns the corresponding colour
+%   string and position.
 %
 %   Syntax:
-%   [colourString, colourPosition, cmapPolarity] = findcmap(name) searches for a
-%   colourmap with the specified name and returns the corresponding colour
-%   string and position, as well as the polarity of the colour map.
+%   [colourString, colourPosition, cmapPolarity] = findcmap(name)
+%       searches for a colourmap with the specified name and returns the 
+%       corresponding colour string and position, as well as the polarity 
+%       of the colour map.
 %
 %   Inputs:
 %   - name: The name of the colour map to search for.
@@ -16,13 +17,14 @@
 %   - cmapPolarity: The polarity of the found colour map.
 %
 %   Example:
-%       [colourString, colourPosition, cmapPolarity] = findcmap('temperature');
+%   [colourString, colourPosition, cmapPolarity] = ...
+%       findcmap('temperature');
 %
 %   This is a helper function for keynotecmap.
 %
-%   E.-C. 'William' Lee
-%   williameclee@gmail.com
-%   Jun 4, 2024
+%   Last modified by:
+%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   Jun 6, 2024
 
 function [colourString, colourPosition, cmapPolarity] = findcmap(name)
     % Read all the colour map data

@@ -1,4 +1,4 @@
-%%  keynotecmap
+%% keynotecmap
 %   Generate a custom colourmap based on a given name and parameters.
 %
 %   Syntax:
@@ -6,18 +6,18 @@
 %   cmap = keynotecmap(name, levels) returns the colourmap with the
 %       specified number of levels.
 %       The default number of levels is 16.
-%   cmap = keynotecmap(name, 'Centre', centre) returns the colourmap with
+%   cmap = keynotecmap(name, 'Centre', centre) returns the colourmap with 
 %       its centre at the specified position.
 %       The default centre position is 0.5.
 %   cmap = keynotecmap(name, ...
 %           'Centre', centre, 'CentreMode', centreMode)
-%       returns the colourmap with the specified centre mode, 'equal' or
+%       returns the colourmap with the specified centre mode, 'equal' or 
 %       'full'.
 %       The default centre mode is 'equal'.
-%   cmap = keynotecmap(name, 'Direction', direction) returns the colourmap
-%       with the specified direction, 'normal' or 'reverse'.
+%   cmap = keynotecmap(name, 'Direction', direction) returns the
+%       colourmap with the specified direction, 'normal' or 'reverse'.
 %       The default direction is 'normal'.
-%   cmap = keynotecmap(name, 'Method', method) returns the colourmap with
+%   cmap = keynotecmap(name, 'Method', method) returns the colourmap with 
 %       the specified interpolation method, 'exact' or 'smooth'.
 %       The default method is 'exact'.
 %
@@ -26,9 +26,9 @@
 %   - levels: The number of levels in the colourmap.
 %   - centre: The centre position of the colourmap.
 %   - centremode: The mode for shifting the colour position.
-%       - 'equal': Both sides from the centre are scaled equally. Parts of
+%       - 'equal': Both sides from the centre are scaled equally. Parts of 
 %           the colourmap may be truncated.
-%       - 'full': The two sides are scaled independently, showing the full
+%       - 'full': The two sides are scaled independently, showing the full 
 %           range of colours.
 %   - direction: The direction of the colourmap, 'normal' or 'reverse'.
 %   - method: A character vector specifying the interpolation method,
@@ -41,14 +41,14 @@
 %
 %   Example:
 %   cmap = keynotecmap('temperature', 32, ...
-%           'Centre', 0.3, 'CentreMode', 'full');
+%       'Centre', 0.3, 'CentreMode', 'full');
 %
 %   See also:
 %   keynotecolour (kc), interpcmap
 %
-%   E.-C. 'William' Lee
-%   williameclee@gmail.com
-%   Jun 4, 2024
+%   Last modified by:
+%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   Jun 6, 2024
 
 function cmap = keynotecmap(name, varargin)
     %% Initialisation
@@ -56,8 +56,9 @@ function cmap = keynotecmap(name, varargin)
     addRequired(p, 'Name', @(x) ischar(x) || isstring(x));
     addOptional(p, 'Levels', 16, ...
         @(x) isnumeric(x) && x > 0);
-    addParameter(p, 'Centre', 0.5, ...
-        @(x) isnumeric(x) && x >= 0 && x <= 1);
+    addParameter(p, 'Centre', nan, ...
+        @(x) (isnumeric(x) && x >= 0 && x <= 1) ...
+        || isempty(x) || isnan(x));
     addParameter(p, 'CentreMode', 'equal', ...
         @(x) ischar(validatestring(x, {'equal', 'full'})));
     addParameter(p, 'Direction', 'normal', ...
@@ -75,10 +76,23 @@ function cmap = keynotecmap(name, varargin)
     interpMethod = p.Results.Method;
     isSymmetricCentre = p.Results.SymmetricCentre;
 
+    if isempty(centre) || centre == 0.5
+        centre = nan;
+    end
+
+    % Check for inverted or reversed colourmap
+    if contains(name, 'inverted')
+        direction = 'reverse';
+        name = strtrim(strrep(name, 'inverted', ''));
+    elseif contains(name, 'reverse')
+        direction = 'reverse';
+        name = strtrim(strrep(name, 'reverse', ''));
+    end
+
     %% Main
     % Retreive colourmap information from colours/index-colourmaps.csv
     [colourString, colourPosition, cmapPolarity] = findcmap(name);
-    dipoleCentre = [];
+    dipoleCentre = nan;
 
     if strcmp(cmapPolarity, 'dipole') && strcmp(interpMethod, 'exact') && ...
             strcmp(isSymmetricCentre, 'on')
@@ -107,7 +121,7 @@ end
 %% Shift and normalise the colour position
 function positionShift = shiftposition(position, centre, centreMode)
     % If the centre is 0.5, no need to shift
-    if centre == 0.5
+    if isnan(centre)
         positionShift = normalize(position, 'range');
         return;
     end

@@ -3,12 +3,14 @@
 %   based on the given colour name, darkness, and format.
 %
 %   Syntax:
-%   colour = keynotecolour(colourname) returns the colour specified by the
-%       colour name or the colour-darkness abbreviation.
-%   colour = keynotecolour(colourname, darkness) returns the colour with
-%       the specified darkness value.
-%   colour = keynotecolour(colourname, 'Format', format) returns the colour
-%       with the specified format, 'normalised' or '8bit'.
+%   colour = keynotecolour(colourname)
+%       returns the colour specified by the colour name or the
+%       colour-darkness abbreviation.
+%   colour = keynotecolour(colourname, darkness)
+%       returns the colour with the specified darkness value.
+%   colour = keynotecolour(colourname, 'Format', format)
+%       returns the colour with the specified format, 'normalised' or
+%       '8bit'.
 %       The default format is 'normalised'.
 %
 %   Input Arguments:
@@ -31,9 +33,9 @@
 %
 %   An alias for this function is kc.
 %
-%   E.-C. 'William' Lee
-%   williameclee@gmail.com
-%   May 13, 2024
+%   Last modified by:
+%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   Jun 6, 2024
 
 function [colour, errorFlag] = keynotecolour(colourName, varargin)
     %% Initialisation
