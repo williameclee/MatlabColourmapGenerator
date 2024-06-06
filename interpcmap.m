@@ -53,7 +53,7 @@
 %
 %   E.-C. 'William' Lee
 %   williameclee@gmail.com
-%   Jun 4, 2024
+%   Jun 5, 2024
 
 function cmap = interpcmap(colourArray, varargin)
     %% Initialisation
@@ -108,19 +108,28 @@ end
 function cmap = intpcmapexact(colourArray, position, levels, centre)
     cmap = zeros([levels, size(colourArray, 2)]); % initialise colourmap
     % Find the closest index of each colour in the colourmap
-    stepsize = 1 / (levels - 1);
+    stepsize = 1 / levels;
     level = round(position / stepsize) + 1;
 
     if ~isempty(centre)
         [~, centreId] = min(abs(position(:) - centre));
-        % centreLowerBound = (level(centreId) - 1) * stepsize;
-        if abs((level(centreId) - 1.5) * stepsize - centre) <= 1e-4
+
+        if abs((level(centreId) - 1) * stepsize - centre) <= 1e-3
             colourArray = [colourArray(1:centreId, :); ...
                                colourArray(centreId, :); ...
                                colourArray(centreId + 1:end, :)];
             level = [level(1:centreId - 1), ...
                          level(centreId) - 1, ...
                          level(centreId:end)];
+        elseif abs((level(centreId)) * stepsize - centre) <= 1e-3
+            colourArray = [colourArray(1:centreId - 1, :); ...
+                               colourArray(centreId, :); ...
+                               colourArray(centreId:end, :)];
+            level = [level(1:centreId), ...
+                         level(centreId) + 1, ...
+                         level(centreId + 1:end)];
+        else
+            level(centreId) = floor(centre / stepsize) + 1;
         end
 
     end

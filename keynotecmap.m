@@ -93,6 +93,7 @@ function cmap = keynotecmap(name, varargin)
     % Shift the colour position
     if strcmp(direction, 'reverse')
         centre = 1 - centre;
+        dipoleCentre = 1 - dipoleCentre;
     end
 
     colourPosition = shiftposition(colourPosition, centre, centreMode);
