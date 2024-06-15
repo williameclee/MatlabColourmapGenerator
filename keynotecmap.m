@@ -1,4 +1,4 @@
-%% keynotecmap
+%% KEYNOTECMAP
 %   Generate a custom colourmap based on a given name and parameters.
 %
 %   Syntax:
@@ -6,18 +6,18 @@
 %   cmap = keynotecmap(name, levels) returns the colourmap with the
 %       specified number of levels.
 %       The default number of levels is 16.
-%   cmap = keynotecmap(name, 'Centre', centre) returns the colourmap with 
+%   cmap = keynotecmap(name, 'Centre', centre) returns the colourmap with
 %       its centre at the specified position.
 %       The default centre position is 0.5.
 %   cmap = keynotecmap(name, ...
 %           'Centre', centre, 'CentreMode', centreMode)
-%       returns the colourmap with the specified centre mode, 'equal' or 
+%       returns the colourmap with the specified centre mode, 'equal' or
 %       'full'.
 %       The default centre mode is 'equal'.
 %   cmap = keynotecmap(name, 'Direction', direction) returns the
 %       colourmap with the specified direction, 'normal' or 'reverse'.
 %       The default direction is 'normal'.
-%   cmap = keynotecmap(name, 'Method', method) returns the colourmap with 
+%   cmap = keynotecmap(name, 'Method', method) returns the colourmap with
 %       the specified interpolation method, 'exact' or 'smooth'.
 %       The default method is 'exact'.
 %
@@ -26,9 +26,9 @@
 %   - levels: The number of levels in the colourmap.
 %   - centre: The centre position of the colourmap.
 %   - centremode: The mode for shifting the colour position.
-%       - 'equal': Both sides from the centre are scaled equally. Parts of 
+%       - 'equal': Both sides from the centre are scaled equally. Parts of
 %           the colourmap may be truncated.
-%       - 'full': The two sides are scaled independently, showing the full 
+%       - 'full': The two sides are scaled independently, showing the full
 %           range of colours.
 %   - direction: The direction of the colourmap, 'normal' or 'reverse'.
 %   - method: A character vector specifying the interpolation method,
@@ -44,10 +44,14 @@
 %       'Centre', 0.3, 'CentreMode', 'full');
 %
 %   See also:
-%   keynotecolour (kc), interpcmap
+%   KEYNOTECOLOUR (KC), INTERPCMAP
+%
+%   Authored by:
+%   E.-C. Lee (williameclee@gmail.com)
+%   May 9, 2024
 %
 %   Last modified by:
-%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   E.-C. Lee (williameclee@gmail.com)
 %   Jun 6, 2024
 
 function cmap = keynotecmap(name, varargin)
@@ -56,7 +60,9 @@ function cmap = keynotecmap(name, varargin)
     addRequired(p, 'Name', @(x) ischar(x) || isstring(x));
     addOptional(p, 'Levels', 16, ...
         @(x) isnumeric(x) && x > 0);
-    addParameter(p, 'Centre', nan, ...
+    addParameter(p, 'ColourSpace', 'oklab', ...
+        @(x) ischar(validatestring(lower(x), {'oklab', 'rgb'})));
+    addParameter(p, 'Centre', 0.5, ...
         @(x) (isnumeric(x) && x >= 0 && x <= 1) ...
         || isempty(x) || isnan(x));
     addParameter(p, 'CentreMode', 'equal', ...
@@ -70,13 +76,14 @@ function cmap = keynotecmap(name, varargin)
     parse(p, name, varargin{:});
     name = p.Results.Name;
     levels = round(p.Results.Levels);
+    colourSpace = p.Results.ColourSpace;
     centre = p.Results.Centre;
     centreMode = p.Results.CentreMode;
     direction = p.Results.Direction;
     interpMethod = p.Results.Method;
     isSymmetricCentre = p.Results.SymmetricCentre;
 
-    if isempty(centre) || centre == 0.5
+    if isempty(centre)
         centre = nan;
     end
 
@@ -90,8 +97,8 @@ function cmap = keynotecmap(name, varargin)
     end
 
     %% Main
-    % Retreive colourmap information from colours/index-colourmaps.csv
-    [colourString, colourPosition, cmapPolarity] = findcmap(name);
+    % Retreive colourmap information
+    [colourString, colourPosition, cmapPolarity] = readcmap(name);
     dipoleCentre = nan;
 
     if strcmp(cmapPolarity, 'dipole') && strcmp(interpMethod, 'exact') && ...
@@ -113,8 +120,8 @@ function cmap = keynotecmap(name, varargin)
     colourPosition = shiftposition(colourPosition, centre, centreMode);
     % Interpolate the colourmap
     cmap = interpcmap(colourArray, levels, colourPosition, ...
-        'Direction', direction, 'Method', interpMethod, ...
-        'DipoleCentre', dipoleCentre);
+        'ColourSpace', colourSpace, 'Method', interpMethod, ...
+        'Direction', direction, 'DipoleCentre', dipoleCentre);
 
 end
 

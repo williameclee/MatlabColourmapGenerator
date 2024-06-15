@@ -1,4 +1,4 @@
-%%  keynotecolour
+%%  KEYNOTECOLOUR
 %   Returns the RGB value of a colour in Apple's Keynote colour palette
 %   based on the given colour name, darkness, and format.
 %
@@ -33,22 +33,28 @@
 %
 %   An alias for this function is kc.
 %
+%   Authored by:
+%   E.-C. Lee (williameclee@gmail.com)
+%   May 9, 2024
+%
 %   Last modified by:
-%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   E.-C. Lee (williameclee@gmail.com)
 %   Jun 6, 2024
 
-function [colour, errorFlag] = keynotecolour(colourName, varargin)
+function [colour, errorFlag, ColourData] = keynotecolour(colourName, varargin)
     %% Initialisation
     errorFlag = uint8(0);
-    fileroot = [fileparts(mfilename('fullpath')), '/colours/'];
+    % fileroot = [fileparts(mfilename('fullpath')), '/colours/'];
     p = inputParser;
     addRequired(p, 'ColourName', @(x) ischar(x) || isstring(x));
     addOptional(p, 'Darkness', 2, @isnumeric);
     addParameter(p, 'Format', 'normalised', @(x) ischar(x) || isstring(x));
+    addParameter(p, 'ColourData', []);
     parse(p, colourName, varargin{:});
     colourName = p.Results.ColourName;
     darkness = p.Results.Darkness;
     format = p.Results.Format;
+    ColourData = p.Results.ColourData;
 
     %% Processing the colour and darkness values
     % Convert colour abbreviation to colour name and darkness value
@@ -66,17 +72,23 @@ function [colour, errorFlag] = keynotecolour(colourName, varargin)
         darkness = min(max(darkness, 0), 4);
     end
 
-    % Generate the colour-to-file dictionary
-    fileDict = findfile(fileroot);
-    % Read the colour list from the corresponding file
-    if isKey(fileDict, colourName)
-        colourList = readmatrix(strjoin([fileroot, fileDict(colourName)], ''));
-    else
-        error(['Unknown colour name ''', colourName, '''.']);
+    if isempty(ColourData)
+        [ColourData.matrix, ColourData.aliases, ~, ~, ColourData.nShade] = ...
+            readcolourmatrix('keynote');
+        ColourData.matrix = double(ColourData.matrix);
+    end
+
+    colourId = find(cellfun(@(c) any(strcmp(colourName, c)), ColourData.aliases), 1, 'first');
+
+    if isempty(colourId)
+        errorFlag = uint8(1);
+        warning(['Unknown colour name ''', colourName, '''.']);
+        colour = [255, 255, 255]; % white
+        return;
     end
 
     % Retrieve the colour based on the darkness value
-    colour = getColour(colourList, darkness);
+    colour = getcolour(ColourData, colourId, darkness);
     % Normalise the colour based on the format
     switch lower(format)
         case {'normalised', 'normalized'}
@@ -89,55 +101,39 @@ function [colour, errorFlag] = keynotecolour(colourName, varargin)
 
 end
 
-%% Reading the colour index file and generating the colour-to-file dictionary.
-function fileDict = findfile(fileroot)
-    % Read the colour index file into a table and clean the data format
-    colour_index_table = readtable([fileroot, 'index-colours.csv'], ...
-        'Delimiter', ';');
-    colour_index_table.aliases = cellfun(@(x) (strsplit(x, ', ')), ...
-        colour_index_table.aliases, ...
-        'UniformOutput', false);
-    % Generate the colour-to-file dictionary
-    aliases = [colour_index_table.aliases{:}].';
-    file = cellfun(@(x, y) repmat({x}, length(y), 1), ...
-        colour_index_table.file, colour_index_table.aliases, ...
-        'UniformOutput', false);
-    file = vertcat(file{:});
-    fileDict = dictionary(string(aliases), string(file));
-end
-
-%% Returning the interpolated colour based on the index value.
-function colour = getColour(colourList, index)
+%% Subfunctions
+% Returning the interpolated colour based on the index value.
+function colour = getcolour(ColourData, colourId, shade)
     % Determine whether interpolation is necessary
-    if isinteger(index)
+    if isinteger(shade)
 
-        if index == 0
-            colour = [255, 255, 255]; % white
+        if shade == 0
+            colour = ones([1, 3]) * 255; % white
         else
-            colour = colourList(index, :);
+            colour = ColourData.matrix((colourId - 1) * ColourData.nShade + shade, :);
         end
 
         return;
     end
 
     % Interpolate between the colours
-    if index < 1 % interpolate between white and the first colour
-        colour = colourList(1, :) * index + [255, 255, 255] * (1 - index);
+    if shade < 1 % interpolate between white and the first colour
+        colour = ColourData.matrix((colourId - 1) * ColourData.nShade + 1, :) * shade + ones([1, 3]) * 255 * (1 - shade);
     else % interpolate between colours
-        indexInt = floor(index);
-        colour = interp1([indexInt, indexInt + 1], ...
-            [colourList(indexInt, :); colourList(indexInt + 1, :)], ...
-            index, 'linear');
+        shadeInt = floor(shade);
+        colour = interp1([shadeInt, shadeInt + 1], ...
+            [ColourData.matrix((colourId - 1) * ColourData.nShade + shadeInt, :); ColourData.matrix((colourId - 1) * ColourData.nShade + shadeInt + 1, :)], ...
+            shade, 'linear');
     end
 
 end
 
-%% Determination of whether the input is numerically an integer (but not necessarily using an integer class).
+% Determination of whether the input is numerically an integer (but not necessarily using an integer class).
 function flag = isinteger(x)
     flag = isnumeric(x) && isreal(x) && isfinite(x) && x == round(x);
 end
 
-%% Determination of whether the input is a colour abbreviation (e.g. 'b3')
+% Determination of whether the input is a colour abbreviation (e.g. 'b3')
 function flag = iscolourabbr(colourString)
     flag = isnumeric(str2double(colourString(2:end))) && ...
         ~isnan(str2double(colourString(2:end)));

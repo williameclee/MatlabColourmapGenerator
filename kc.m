@@ -1,4 +1,4 @@
-%% kc
+%% KC
 %   Returns the RGB value of a colour in Apple's Keynote colour palette
 %   based on the given colour name, darkness, and format.
 %  	This is an alias for keynotecolour.
@@ -32,8 +32,12 @@
 %   colour = kc('b3');
 %   colour = kc('b', 3, 'Format', '8bit');
 %
+%   Authored by:
+%   E.-C. Lee (williameclee@gmail.com)
+%   May 9, 2024
+%
 %   Last modified by:
-%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   E.-C. Lee (williameclee@gmail.com)
 %   Jun 6, 2024
 
 function colour = kc(colourString, varargin)

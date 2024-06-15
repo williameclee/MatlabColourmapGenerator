@@ -1,0 +1,14 @@
+Colourmaps with the Keynote colour scheme
+12
+blue;					w1 b2 b4; 				0, 0.6, 1; 							monopole
+red;					w1 r2 r4; 				0, 0.4, 1; 							monopole
+cyan;					w1 c2 c4; 				0, 0.4, 1; 							monopole
+green;					w1 g2 g4; 				0, 0.4, 1; 							monopole
+pink;					w1 p2 p4; 				0, 0.6, 1; 							monopole
+yellow;					w1 y2 y4; 				0, 0.4, 1; 							monopole
+temperature; 			c4 b3 b2 c1 y1 y4 p4; 	-1, -0.8, -0.6, -0.2, 0.1, 0.5, 1; 	monopole
+temperature anomaly; 	c4 b2 w1 y3 p4; 		-1, -0.7, 0, 0.4, 1; 				dipole
+warm;					w1 y3 r3 p4; 			0, 0.3, 0.6, 1;						monopole
+cold;					w1 b2 b3 c4; 			0, 0.4, 0.7, 1;						monopole
+seismic;				b4 b2 w1 r2 r4; 		-1, -0.6, 0, 0.4, 1; 				dipole
+rainbow;				r2 y2 g2 c2 b2 p2 r2; 	0, 0.17, 0.33, 0.5, 0.67, 0.83, 1;	monopole

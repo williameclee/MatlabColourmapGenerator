@@ -1,4 +1,4 @@
-%% kcmap
+%% KCMAP
 %   Generate a custom colourmap based on a given name and parameters.
 % 	This is an alias for keynotecmap.
 %
@@ -45,10 +45,14 @@
 %   cmap = kcmap('temperature', 32, 'Centre', 0.3, 'CentreMode', 'full');
 %
 %   See also:
-%   keynotecolour (kc), interpcmap
+%   KEYNOTECOLOUR (KC), INTERPCMAP
+%
+%   Authored by:
+%   E.-C. Lee (williameclee@gmail.com)
+%   May 9, 2024
 %
 %   Last modified by:
-%   'Will' E.-C. Lee (williameclee@gmail.com)
+%   E.-C. Lee (williameclee@gmail.com)
 %   Jun 6, 2024
 
 function cmap = kcmap(name, varargin)
