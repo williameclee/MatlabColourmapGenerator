@@ -1,4 +1,4 @@
-# Custom MATLAB Colour Selector
+# Custom MATLAB Colourmap Generator
 
 This repository contains MATLAB scripts for quickly selecting custom colours and colourmaps for MATLAB.
 
