@@ -3,6 +3,8 @@
 % 	This is an alias for keynotecmap.
 %
 %   Syntax:
+%   cmap = kcmap('demo') 
+%       runs a demonstration of the function.
 %   cmap = kcmap(name)
 %       returns the colourmap based on the given name.
 %   cmap = kcmap(name, levels)

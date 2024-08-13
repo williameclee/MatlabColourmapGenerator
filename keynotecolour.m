@@ -41,7 +41,8 @@
 %   E.-C. Lee (williameclee@gmail.com)
 %   Jun 6, 2024
 
-function [colour, errorFlag, ColourData] = keynotecolour(colourName, varargin)
+function [colour, errorFlag, ColourData] = ...
+        keynotecolour(colourName, varargin)
     %% Initialisation
     errorFlag = uint8(0);
     % fileroot = [fileparts(mfilename('fullpath')), '/colours/'];

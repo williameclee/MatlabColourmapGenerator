@@ -8,11 +8,16 @@
 %   - colourScheme: A string representing the name of the colour scheme.
 %
 %   Output:
-%   - colourMatrix: A nColour * nShade x 3 numeric matrix representing the RGB colour values.
-%   - colourAliases: A nColour x 1 cell array representing the aliases of the colours.
-%   - colourNames: A nColour x 1 cell array representing the names of the colours.
-%   - nColour: A scalar representing the number of colours in the colour scheme.
-%   - nShade: A scalar representing the number of shades per colour in the colour scheme.
+%   - colourMatrix: A nColour * nShade x 3 numeric matrix representing the 
+%       RGB colour values.
+%   - colourAliases: A nColour x 1 cell array representing the aliases of 
+%       the colours.
+%   - colourNames: A nColour x 1 cell array representing the names of the 
+%       colours.
+%   - nColour: A scalar representing the number of colours in the colour 
+%       scheme.
+%   - nShade: A scalar representing the number of shades per colour in the 
+%       colour scheme.
 %
 %   Authored by:
 %   E.-C. Lee (williameclee@gmail.com)
@@ -46,11 +51,13 @@ function [colourMatrix, colourAliases, colourNames, nColour, nShade] = ...
     % Read the colours
     for colourId = 1:nColour
         % Read the colour name
-        colourMetadata = textscan(indexFileId, '%s %s', 1, 'Delimiter', ';');
+        colourMetadata = textscan(indexFileId, '%s %s', 1, ...
+            'Delimiter', ';');
         colourNames{colourId} = colourMetadata{1};
         colourAliases{colourId} = strsplit(colourMetadata{2}{1}, ', ');
         % Read the colour shades
-        colourRGB = textscan(indexFileId, '%u8 %u8 %u8', nShade, 'Delimiter', ',');
+        colourRGB = textscan(indexFileId, '%u8 %u8 %u8', nShade, ...
+            'Delimiter', ',');
         colourMatrix((colourId - 1) * nShade + 1:colourId * nShade, :) = ...
             [colourRGB{1}, colourRGB{2}, colourRGB{3}];
 

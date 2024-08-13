@@ -1,15 +1,19 @@
 %% SRGB2XYZ
-%   Coneverts a n x 3 matrix of sRGB colour values to XYZ. The algorithm and the matrix are taken from https://www.image-engineering.de/library/technotes/958-how-to-convert-between-srgb-and-ciexyz
+%   Coneverts a n x 3 matrix of sRGB colour values to XYZ. The algorithm 
+%   and the matrix are taken from 
+%   https://www.image-engineering.de/library/technotes/958-how-to-convert-between-srgb-and-ciexyz
 %
 %   Syntax:
 %   colourXyz = srgb2xyz(colourSrgb)
 %       returns the XYZ colour values of the sRGB colour values.
 %
 %   Input:
-%   - colourSrgb: A n x 3 or 3 x n numeric matrix representing the sRGB colour values.
+%   - colourSrgb: A n x 3 or 3 x n numeric matrix representing the sRGB 
+%       colour values.
 %
 %   Output:
-%   - colourXyz: A n x 3 or 3 x n numeric matrix representing the XYZ colour values. The size of the output is the same as the input.
+%   - colourXyz: A n x 3 or 3 x n numeric matrix representing the XYZ 
+%       colour values. The size of the output is the same as the input.
 %
 %   Example:
 %   colourXyz = srgb2xyz([0.5, 0, 0]);

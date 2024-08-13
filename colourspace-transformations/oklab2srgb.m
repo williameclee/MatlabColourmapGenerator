@@ -6,10 +6,12 @@
 %       returns the sRGB colour values of the Oklab colour values.
 %
 %   Input:
-%   - colourOklab: A n x 3 or 3 x n numeric matrix representing the Oklab colour values.
+%   - colourOklab: A n x 3 or 3 x n numeric matrix representing the Oklab 
+%       colour values.
 %
 %   Output:
-%   - colourSrgb: A n x 3 or 3 x n numeric matrix representing the sRGB colour values. The size of the output is the same as the input.
+%   - colourSrgb: A n x 3 or 3 x n numeric matrix representing the sRGB 
+%       colour values. The size of the output is the same as the input.
 %
 %   Example:
 %   colourSrgb = oklab2srgb([0.5, 0, 0]);

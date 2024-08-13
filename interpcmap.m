@@ -121,13 +121,14 @@ function cmap = interpcmap(colourArray, varargin)
 
 end
 
-%% The 'smooth' interpolation method smoothly interpolates between the colours
+%% Subfunctions
+% The 'smooth' interpolation method smoothly interpolates between the colours
 function cmap = intpcmapsmooth(colourArray, position, levels)
     cmap = interp1(position, colourArray, linspace(0, 1, levels), ...
     'linear'); % interpolate colours
 end
 
-%% The 'exact' interpolation method ensures that the specified colours are in the colourmap
+% The 'exact' interpolation method ensures that the specified colours are in the colourmap
 function cmap = intpcmapexact(colourArray, position, levels, centre)
     cmap = zeros([levels, size(colourArray, 2)]); % initialise colourmap
     % Find the closest index of each colour in the colourmap

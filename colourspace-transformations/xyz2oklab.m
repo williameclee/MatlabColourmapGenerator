@@ -1,15 +1,18 @@
 %% XYZ2OKLAB
-%   Converts a colour from XYZ to Oklab. The algorithm and the matrix are taken from https://bottosson.github.io/posts/oklab/
+%   Converts a colour from XYZ to Oklab. The algorithm and the matrix are 
+%   taken from https://bottosson.github.io/posts/oklab/
 %
 %   Syntax:
 %   colourOklab = xyz2oklab(colourXyz)
 %       returns the Oklab colour values of the XYZ colour values.
 %
 %   Input:
-%   - colourXyz: A n x 3 or 3 x n numeric matrix representing the XYZ colour values.
+%   - colourXyz: A n x 3 or 3 x n numeric matrix representing the XYZ 
+%       colour values.
 %
 %   Output:
-%   - colourOklab: A n x 3 or 3 x n numeric matrix representing the Oklab colour values. The size of the output is the same as the input.
+%   - colourOklab: A n x 3 or 3 x n numeric matrix representing the Oklab 
+%       colour values. The size of the output is the same as the input.
 %
 %   Example:
 %   colourOklab = xyz2oklab([0.5, 0, 0]);

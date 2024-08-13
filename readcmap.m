@@ -30,7 +30,8 @@
 %   E.-C. Lee (williameclee@gmail.com)
 %   Jun 14, 2024
 
-function [colourString, colourPosition, cmapPolarity] = readcmap(name, varargin)
+function [colourString, colourPosition, cmapPolarity] = ...
+        readcmap(name, varargin)
     %% Initialisation
     p = inputParser;
     addRequired(p, 'Name', @(x) ischar(x) || isstring(x));
