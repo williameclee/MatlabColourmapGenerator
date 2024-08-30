@@ -5,7 +5,7 @@ This repository contains MATLAB scripts for quickly selecting custom colours and
 Created by En-Chi Lee, 2024.
 Last updated Jun 6, 2024.
 
-## Usage
+## Getting started
 
 Make sure MATLAB has access to the `colours` and `colourspace-transformation` folders. Use the `addpath` function to add the folders to the MATLAB path.
 
@@ -27,3 +27,7 @@ colourMap = kcmap('seismic', 16);
 ```
 
 The colourmaps are by default interpolated in the Oklab colour space.
+
+---
+Last modified by:
+- [En-Chi Lee (@williameclee)](https://github.com/williameclee), 2024/08/13

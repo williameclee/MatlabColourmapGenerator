@@ -50,21 +50,21 @@
 %   2024/08/13, williameclee@arizona.edu (@williameclee)
 %   2024/06/06, williameclee@arizona.edu (@williameclee)
 
-function cmap = keynotecmap(name, varargin)
+function cmap = customcmap(name, varargin)
     %% Checking for demo
     if strcmp(name, 'demo')
         cmap = rundemo;
         return
     end
 
-    cmap = getcmap('keynote', name, varargin{:});
+    cmap = getcmap('custom', name, varargin{:});
 end
 
 %% Subfunctions
 function cmap = rundemo
     %% Generating the colourmap
     level = 16;
-    cmap = keynotecmap('temperature anomaly', level);
+    cmap = customcmap('temperature anomaly', level);
 
     %% Plotting the colourmap
     % Generate the data to plot
@@ -74,7 +74,7 @@ function cmap = rundemo
     peak = peak * level;
 
     % Plot the data
-    figure
+    figure(999)
     clf
     contourf(peak, level, 'LineStyle', 'none')
     colormap(cmap)

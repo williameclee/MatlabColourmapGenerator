@@ -135,6 +135,10 @@ function cmap = intpcmapexact(colourArray, position, levels, centre)
     stepsize = 1 / levels;
     level = round(position / stepsize) + 1;
 
+    if level(end) == levels + 1
+        level(end) = levels;
+    end
+
     if ~isnan(centre)
         [~, centreId] = min(abs(position(:) - centre));
 
@@ -171,7 +175,7 @@ function cmap = intpcmapexact(colourArray, position, levels, centre)
             % levels or changing the position
             cmap(level(iColour), :) ...
                 = (colourArray(iColour, :) + colourArray(iColour + 1, :)) / 2;
-            continue;
+            continue
         end
 
         % Interpolate between the colours

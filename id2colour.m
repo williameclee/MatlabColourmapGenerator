@@ -29,12 +29,27 @@
 %   E.-C. Lee (williameclee@gmail.com)
 %   Jun 14, 2024
 
-function colourArray = id2colour(colourString)
+function colourArray = id2colour(colourString, varargin)
+    p = inputParser;
+    addOptional(p, 'ColourScheme', 'keynote', ...
+        @(x) ischar(x) || isstring(x));
+    parse(p, varargin{:});
+    cscheme = p.Results.ColourScheme;
+
+    switch cscheme
+        case 'keynote'
+            cfun = 'keynotecolour';
+        case 'custom'
+            cfun = 'customcolour';
+        otherwise
+            error('Unknown colour scheme ''%s''.', cscheme);
+    end
+
     % Siwtch between character array and cell array
     if ischar(colourString)
-        colourArray = char2colour(colourString);
+        colourArray = char2colour(colourString, cfun);
     elseif iscell(colourString)
-        colourArray = cell2colour(colourString);
+        colourArray = cell2colour(colourString, cfun);
     else
         error('Input must be a character array or a cell array of character arrays.');
     end
@@ -43,7 +58,7 @@ end
 
 %% Subfunctions
 % Converts a character array representing colours to an (RGB) colour array
-function colourArray = char2colour(colourChar)
+function colourArray = char2colour(colourChar, cfun)
     % Split the string into individual colours
     colourString = strrep(colourChar, ' ', '');
     colourString = regexprep(colourString, '([A-Za-z])', '; $1');
@@ -57,7 +72,7 @@ function colourArray = char2colour(colourChar)
     % Convert each colour to an colour array with keynotecolour
     for colourId = 1:length(colourList)
         [colourArray(colourId, :), errorFlag, ColourData] = ...
-        keynotecolour(colourList{colourId}, 'ColourData', ColourData);
+            feval(cfun, colourList{colourId}, 'ColourData', ColourData);
 
         switch errorFlag
             case 1
@@ -72,14 +87,14 @@ function colourArray = char2colour(colourChar)
 end
 
 % Converts character arrays to an RGB colour array
-function colourArray = cell2colour(colourCell)
+function colourArray = cell2colour(colourCell, cfun)
     % Initialise the colour array
     colourArray = zeros(length(colourCell), 3);
     ColourData = [];
     % Convert each colour to an colour array with keynotecolour
     for colourId = 1:length(colourCell)
         [colourArray(colourId, :), errorFlag, ColourData] = ...
-            keynotecolour(char(colourCell{colourId}), ...
+            feval(cfun, char(colourCell{colourId}), ...
             'ColourData', ColourData);
 
         switch errorFlag

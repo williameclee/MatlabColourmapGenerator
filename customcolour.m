@@ -1,4 +1,4 @@
-%%  KEYNOTECOLOUR
+%%  CUSTOMCOLOUR
 %   Returns the RGB value of a colour in Apple's Keynote colour palette
 %   based on the given colour name, darkness, and format.
 %
@@ -42,8 +42,8 @@
 %   Jun 6, 2024
 
 function [colour, errorFlag, ColourData] = ...
-        keynotecolour(colourName, varargin)
+        customcolour(colourName, varargin)
     % addpath(fullfile(fileparts(mfilename('fullpath')), 'aux'));
     [colour, errorFlag, ColourData] = ...
-        getcolour('keynote', colourName, varargin{:});
+        getcolour('custom', colourName, varargin{:});
 end

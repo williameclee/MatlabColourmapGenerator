@@ -31,19 +31,20 @@
 %   Jun 14, 2024
 
 function [colourString, colourPosition, cmapPolarity] = ...
-        readcmap(name, varargin)
+        readcmap(varargin)
     %% Initialisation
     p = inputParser;
     addRequired(p, 'Name', @(x) ischar(x) || isstring(x));
     addOptional(p, 'ColourScheme', 'keynote', ...
         @(x) ischar(x) || isstring(x));
-    parse(p, name);
+    parse(p, varargin{:});
     name = p.Results.Name;
     colourScheme = p.Results.ColourScheme;
 
     %% Reading the colour map data
-    fileroot = fullfile(fileparts(mfilename('fullpath')), 'colours');
-    indexFileId = fopen(fullfile(fileroot, [colourScheme, '-cmaps.txt']), 'r');
+    fileFolder = fullfile(fileparts(mfilename('fullpath')), 'colours');
+    indexFileId = fopen(...
+        fullfile(fileFolder, [colourScheme, '-cmaps.txt']), 'r');
 
     if indexFileId == -1
         error('readcmap:FileNotFound', ...
@@ -57,7 +58,8 @@ function [colourString, colourPosition, cmapPolarity] = ...
     nCmap = nCmap{1};
 
     % Read the colourmaps
-    cmapMetadata = textscan(indexFileId, '%s %s %s %s', nCmap, 'Delimiter', ';');
+    cmapMetadata = ...
+        textscan(indexFileId, '%s %s %s %s', nCmap, 'Delimiter', ';');
     cmapNames = string(cmapMetadata{1});
     cmapColours = cmapMetadata{2};
     cmapColours = cellfun(@strsplit, ...
